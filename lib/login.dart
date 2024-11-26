@@ -92,8 +92,10 @@ class LoginState extends State<Login> {
 
                         if (password_controller.text != '' &&
                             username_controller != '') {
+                          var userName = username_controller.text;
                           var pref = await SharedPreferences.getInstance();
                           pref.setBool(SplashScrState.keyLogin, true);
+                          pref.setString(SplashScrState.keyUser, userName);
 
                           Navigator.pushReplacement(
                               context,

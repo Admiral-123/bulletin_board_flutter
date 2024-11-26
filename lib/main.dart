@@ -17,7 +17,7 @@ class myApp extends StatelessWidget {
       title: 'Bulletin',
       theme: ThemeData(primarySwatch: Colors.blue),
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: SplashScr(),
     );
   }
 }
@@ -31,6 +31,7 @@ class SplashScr extends StatefulWidget {
 
 class SplashScrState extends State<SplashScr> {
   static const String keyLogin = "Login";
+  static const String keyUser = "User";
 
   @override
   void initState() {
@@ -41,17 +42,12 @@ class SplashScrState extends State<SplashScr> {
 
   void whereToGo() async {
     var pref = await SharedPreferences.getInstance();
-    bool? isLoggedIn = await pref.getBool(keyLogin);
+    bool isLoggedIn = pref.getBool(keyLogin) ?? false;
 
     Timer(Duration(seconds: 2), () {
-      if (isLoggedIn!) {
-        if (isLoggedIn == true) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => Login()));
-        } else {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
-        }
+      if (isLoggedIn) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
       } else {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => Login()));
