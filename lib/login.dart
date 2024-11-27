@@ -12,7 +12,7 @@ class Login extends StatefulWidget {
 
 class LoginState extends State<Login> {
   TextEditingController username_controller = TextEditingController();
-  TextEditingController password_controller = TextEditingController();
+  //TextEditingController password_controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -61,27 +61,27 @@ class LoginState extends State<Login> {
                         )),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 12.0,
-                    left: 12.0,
-                  ),
-                  child: TextField(
-                    controller: password_controller,
-                    obscureText: true,
-                    obscuringCharacter: '^',
-                    decoration: InputDecoration(
-                        labelText: 'password',
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide(color: Colors.grey),
-                        )),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(
+                //     right: 12.0,
+                //     left: 12.0,
+                //   ),
+                //   child: TextField(
+                //     controller: password_controller,
+                //     obscureText: true,
+                //     obscuringCharacter: '^',
+                //     decoration: InputDecoration(
+                //         labelText: 'password',
+                //         focusedBorder: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(10.0),
+                //           borderSide: BorderSide(color: Colors.black),
+                //         ),
+                //         border: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(10.0),
+                //           borderSide: BorderSide(color: Colors.grey),
+                //         )),
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: ElevatedButton(
@@ -90,8 +90,7 @@ class LoginState extends State<Login> {
 
                         // send to homepage
 
-                        if (password_controller.text != '' &&
-                            username_controller != '') {
+                        if (username_controller.text.isNotEmpty) {
                           var userName = username_controller.text;
                           var pref = await SharedPreferences.getInstance();
                           pref.setBool(SplashScrState.keyLogin, true);
@@ -101,6 +100,20 @@ class LoginState extends State<Login> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => HomePage()));
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                Future.delayed(
+                                    const Duration(milliseconds: 500), () {
+                                  Navigator.pop(context);
+                                });
+                                return AlertDialog(
+                                  actions: [
+                                    Center(child: Text('add a useraname'))
+                                  ],
+                                );
+                              });
                         }
                       },
                       child: Text('login')),
