@@ -26,7 +26,7 @@ class HomePageState extends State<HomePage> {
     }
   }
 
-  String? name;
+  var name = '';
 
   @override
   void initState() {
@@ -43,15 +43,40 @@ class HomePageState extends State<HomePage> {
         title: const Text('Bulletin'),
         backgroundColor: Colors.amber,
         actions: [
-          GestureDetector(
+          InkWell(
+              onTap: () {
+                showDialog(
+                    context: (context),
+                    builder: (context) {
+                      Future.delayed(const Duration(milliseconds: 1500), () {
+                        Navigator.pop(context);
+                      });
+                      return AlertDialog(
+                        actions: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                                child: Text(
+                              'tap twice to logout',
+                              style: TextStyle(fontSize: 25.0),
+                            )),
+                          )
+                        ],
+                      );
+                    });
+              },
               onDoubleTap: () async {
+                print('logout');
                 Navigator.pushReplacement(
                     context, MaterialPageRoute(builder: (context) => Login()));
 
                 var pref = await SharedPreferences.getInstance();
                 pref.setBool(SplashScrState.keyLogin, false);
               },
-              child: Icon(Icons.logout))
+              child: Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: Icon(Icons.logout),
+              ))
         ],
       ),
       body: allPoints.isNotEmpty
@@ -61,7 +86,7 @@ class HomePageState extends State<HomePage> {
                 return ListTile(
                   leading: Icon(Icons.star),
                   title: Text(allPoints[index][dbRef!.POINT_BULLETIN]),
-                  subtitle: Text('by: $name'),
+                  subtitle: Text('by: ${allPoints[index][dbRef!.USER_NAME]}'),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () async {
@@ -100,8 +125,8 @@ class HomePageState extends State<HomePage> {
                     ElevatedButton(
                       onPressed: () async {
                         if (pointController.text.isNotEmpty) {
-                          await dbRef!
-                              .addPoint(pt: pointController.text.trim());
+                          await dbRef!.addPoint(
+                              pt: pointController.text.trim(), uname: name);
                           pointController.clear();
                           getPoints();
                           Navigator.pop(context); // Close the modal
@@ -123,7 +148,7 @@ class HomePageState extends State<HomePage> {
   void getUserName() async {
     try {
       var namePref = await SharedPreferences.getInstance();
-      name = namePref.getString(SplashScrState.keyUser);
+      name = namePref.getString(SplashScrState.keyUser)!;
     } catch (e) {
       print('err in getting name $e');
       setState(() {
@@ -132,3 +157,6 @@ class HomePageState extends State<HomePage> {
     }
   }
 }
+
+
+// upgrade the schema before adding new columns
